@@ -1,0 +1,544 @@
+/* ============================================================
+   The Only Humans — v4 stylesheet
+   ============================================================ */
+
+:root {
+  /* palette — recalibrated for the color-graded cover.
+     cooler, more desaturated, slightly lighter than v1-v4. */
+  --sky:       #b8bfc2;       /* lifted and desaturated from #aab4bc */
+  --sky-rgb:   184, 191, 194;
+  --sky-deep:  #8e9599;       /* cooler, less blue */
+  --fog:       #d0d4d4;       /* lighter panel, pulled from the bright cloud */
+  --mist:      #dddfdf;       /* NEW — brightest cloud tone, for subtle lifts */
+  --ink:       #1f2328;       /* unchanged — still the right near-black */
+  --ink-soft:  #4a525c;       /* unchanged */
+  --ink-ghost: rgba(31, 35, 40, 0.45);
+  --rose:      #8f5f64;       /* slightly dustier/browner than #9a6269 */
+  --rose-deep: #684244;
+  --veil:      rgba(184, 191, 194, 0.82);
+
+  --sans-display: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+  --sans-body:    'DM Sans', ui-sans-serif, system-ui, sans-serif;
+
+  --measure: 640px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--sky);
+  color: var(--ink);
+  font-family: var(--sans-body);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern", "ss01";
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* ============================================================
+   FIXED HERO (behind everything, every page)
+   ============================================================ */
+.hero-fixed {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: #1a1d22;
+}
+.hero-fixed img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 38%;
+  opacity: 0;
+  animation: heroIn 2.4s ease-out 0.2s forwards;
+}
+.hero-fixed::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 70% 60%, transparent 30%, rgba(26, 29, 34, 0.22) 100%),
+    linear-gradient(to bottom, transparent 60%, rgba(26, 29, 34, 0.35) 100%);
+  pointer-events: none;
+}
+@keyframes heroIn { to { opacity: 1; } }
+
+/* ============================================================
+   TOP NAV
+   ============================================================ */
+.topnav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 26px 44px;
+  color: #e9e3d8;
+  mix-blend-mode: difference;
+  font-family: var(--sans-body);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+.topnav .wordmark {
+  font-family: var(--sans-display);
+  font-weight: 400;
+  font-size: 17px;
+  letter-spacing: -0.005em;
+}
+.topnav ul { display: flex; gap: 28px; list-style: none; }
+.topnav ul a {
+  position: relative;
+  padding-bottom: 2px;
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+.topnav ul a::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+.topnav ul a:hover { opacity: 1; }
+.topnav ul a:hover::after,
+.topnav ul a.active::after { transform: scaleX(1); }
+
+/* ============================================================
+   HOME HERO — drifting title (BASE styles, variant files override)
+   ============================================================ */
+.home-hero {
+  position: relative;
+  height: 100vh;
+  min-height: 640px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.home-hero .drift {
+  position: absolute;
+  font-family: var(--sans-display);
+  font-weight: 300;
+  color: rgba(31, 35, 40, 0.45);  /* fades into the clouds */
+  text-transform: lowercase;
+  pointer-events: auto;
+}
+.home-hero .drift .w {
+  display: inline-block;
+  opacity: 0;
+  animation: driftIn 2s ease-out forwards;
+}
+@keyframes driftIn {
+  from { opacity: 0; transform: translateX(-10px); filter: blur(3px); }
+  to   { opacity: 1; transform: translateX(0); filter: blur(0); }
+}
+
+/* descending title — all six words in three lines, stepping right.
+   Sized to feel present on mobile too (this is the only variant we ship). */
+.home-hero .drift {
+  top: 16vh;
+  left: 52px;
+  right: 30%;
+  font-size: clamp(30px, 3.4vw, 42px);
+  line-height: 2;
+  letter-spacing: 0.08em;
+}
+.home-hero .drift .line { display: block; white-space: nowrap; }
+.home-hero .drift .line-1 { padding-left: 0; }
+.home-hero .drift .line-2 { padding-left: 2em; }
+.home-hero .drift .line-3 { padding-left: 4em; }
+.home-hero .drift .w { margin-right: 0.8em; }
+
+/* HOME HERO — CTA link (replaces "out now") */
+.home-hero .cta {
+  position: absolute;
+  bottom: 14vh;                          /* lifted up — sits over water/horizon area, not pebbles */
+  left: 52px;
+  font-family: var(--sans-body);
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  text-transform: lowercase;
+  color: #f4f1ec;                        /* light text — reads against any patch of the photo */
+  opacity: 0;
+  animation: fadeUp 1.4s ease-out 2.8s forwards;
+  pointer-events: auto;
+  border-bottom: 1px solid rgba(244, 241, 236, 0.5);
+  padding-bottom: 3px;
+  transition: color 0.3s ease, border-color 0.3s ease;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);   /* keeps it readable over light cloud patches */
+}
+.home-hero .cta:hover {
+  color: var(--rose);
+  border-color: var(--rose);
+}
+.home-hero .cta .arrow {
+  display: inline-block;
+  margin-left: 6px;
+  transition: transform 0.3s ease;
+}
+.home-hero .cta:hover .arrow { transform: translate(3px, -3px); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   INNER PAGES — smaller hero strip
+   ============================================================ */
+.page-hero {
+  position: relative;
+  z-index: 2;
+  height: 45vh;
+  min-height: 320px;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 52px 50px;
+}
+.page-hero .eyebrow {
+  font-family: var(--sans-body);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
+  color: rgba(244, 241, 236, 0.75);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  animation: fadeUp 1s ease-out 0.4s forwards;
+}
+
+/* ============================================================
+   CONTENT — much longer, smoother veil transition
+   ============================================================ */
+.content {
+  position: relative;
+  z-index: 1;
+  background: var(--veil);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.content::before {
+  content: '';
+  position: absolute;
+  top: -320px; left: 0; right: 0;
+  height: 320px;
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--sky-rgb), 0) 0%,
+    rgba(var(--sky-rgb), 0.06) 18%,
+    rgba(var(--sky-rgb), 0.18) 36%,
+    rgba(var(--sky-rgb), 0.38) 56%,
+    rgba(var(--sky-rgb), 0.58) 74%,
+    rgba(var(--sky-rgb), 0.74) 88%,
+    var(--veil) 100%
+  );
+  pointer-events: none;
+}
+
+/* ============================================================
+   SECTIONS — tightened 30% on top padding
+   ============================================================ */
+section {
+  padding: 70px 52px;           /* was 100px */
+  max-width: var(--measure);
+  margin: 0 auto;
+  position: relative;
+}
+section.intro { padding-top: 100px; }   /* was 140px */
+section + section { padding-top: 14px; }
+
+.label {
+  font-family: var(--sans-body);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: lowercase;
+  color: var(--ink-soft);
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.label::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--ink-soft);
+  opacity: 0.5;
+}
+
+p { margin-bottom: 1.1em; color: var(--ink); }
+p.soft { color: var(--ink-soft); }
+p em { font-style: italic; }
+
+/* ============================================================
+   BIO
+   ============================================================ */
+.bio p {
+  font-family: var(--sans-display);
+  font-size: clamp(22px, 2.6vw, 30px);
+  line-height: 1.4;
+  font-weight: 300;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+
+/* ============================================================
+   CUSTOM PLAYER (listen)
+   ============================================================ */
+.player {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+.player .cover {
+  aspect-ratio: 1;
+  background: rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+.player .cover img { width: 100%; height: 100%; object-fit: cover; }
+.player .meta-block .album-title {
+  font-family: var(--sans-display);
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+.player .meta-block .album-sub {
+  font-size: 13px;
+  color: var(--ink-soft);
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  margin-bottom: 20px;
+}
+.player .tracklist {
+  list-style: none;
+  border-top: 1px solid rgba(31, 35, 40, 0.15);
+}
+.player .tracklist li {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 14px;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(31, 35, 40, 0.1);
+  font-size: 15px;
+  align-items: baseline;
+}
+.player .tracklist .num { font-family: var(--sans-display); color: var(--ink-soft); font-size: 13px; }
+.player .tracklist .title { color: var(--ink); }
+.player .tracklist .dur { color: var(--ink-soft); font-size: 13px; letter-spacing: 0.05em; }
+
+@media (max-width: 600px) {
+  .player { grid-template-columns: 1fr; gap: 22px; }
+  .player .cover { max-width: 220px; }
+}
+
+/* ============================================================
+   LINK ROW
+   ============================================================ */
+.link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(31, 35, 40, 0.15);
+}
+.link-row a {
+  font-family: var(--sans-body);
+  font-size: 14px;
+  color: var(--rose);
+  transition: color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+}
+.link-row a:hover { color: var(--rose-deep); }
+.link-row a .arrow { opacity: 0.6; transition: transform 0.3s ease, opacity 0.3s ease; }
+.link-row a:hover .arrow { transform: translate(2px, -2px); opacity: 1; }
+
+/* ============================================================
+   SPOTIFY WRAPPER
+   ============================================================ */
+.spotify-wrap {
+  margin-top: 28px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(31, 35, 40, 0.1);
+}
+.bandcamp-wrap {
+  margin-top: 32px;
+  max-width: var(--measure);
+  margin-left: auto;
+  margin-right: auto;
+}
+.spotify-wrap iframe { width: 100%; border: 0; display: block; }
+
+/* ============================================================
+   WATCH
+   ============================================================ */
+.watch-grid {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.video-featured {
+  width: 100%;
+}
+.watch-sub-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+@media (max-width: 600px) {
+  .watch-sub-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.video {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: rgba(31, 35, 40, 0.3);
+  overflow: hidden;
+}
+.video iframe {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  border: 0;
+}
+
+/* ============================================================
+   SHOWS
+   ============================================================ */
+.shows-wrap { margin-top: 28px; }
+
+/* ============================================================
+   NEWSLETTER
+   ============================================================ */
+.newsletter-form {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.newsletter-form input[type="email"] {
+  flex: 1 1 260px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(31, 35, 40, 0.4);
+  padding: 10px 0;
+  font-family: var(--sans-body);
+  font-size: 16px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+.newsletter-form input[type="email"]:focus { border-bottom-color: var(--rose); }
+.newsletter-form input[type="email"]::placeholder { color: var(--ink-soft); }
+.newsletter-form button {
+  background: transparent;
+  border: 1px solid var(--ink-soft);
+  padding: 10px 26px;
+  font-family: var(--sans-body);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: lowercase;
+}
+.newsletter-form button:hover {
+  background: var(--ink);
+  color: var(--sky);
+  border-color: var(--ink);
+}
+.newsletter-msg {
+  margin-top: 12px;
+  font-family: var(--sans-body);
+  font-size: 13px;
+  color: var(--ink-soft);
+  min-height: 18px;
+}
+
+/* ============================================================
+   FOOTER — now inside the veil
+   ============================================================ */
+.content footer {
+  padding: 80px 52px 60px;
+  text-align: center;
+  max-width: var(--measure);
+  margin: 0 auto;
+  position: relative;
+}
+
+.socials {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.socials a {
+  width: 20px;
+  height: 20px;
+  color: var(--ink-soft);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.socials a:hover { color: var(--rose); transform: translateY(-2px); }
+.socials a svg { width: 100%; height: 100%; fill: currentColor; }
+
+.copy {
+  font-family: var(--sans-body);
+  font-size: 11px;
+  color: var(--ink-ghost);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 720px) {
+  .topnav { padding: 20px 22px; }
+  .topnav ul { gap: 18px; font-size: 13px; }
+  .home-hero .cta { bottom: 18vh; left: 22px; }   /* lift higher on mobile so it sits clear of the rocks */
+  .home-hero .drift {
+    top: 14vh;
+    left: 22px;
+    right: 8%;
+    font-size: clamp(28px, 8vw, 40px);  /* bigger on narrow screens — fills the frame more */
+    line-height: 1.8;
+    letter-spacing: 0.06em;
+  }
+  .home-hero .drift .line-2 { padding-left: 1.4em; }
+  .home-hero .drift .line-3 { padding-left: 2.8em; }
+  .page-hero { padding: 0 22px 36px; }
+  section { padding: 56px 22px; }
+  section.intro { padding-top: 78px; }
+  .content footer { padding: 60px 22px 40px; }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .drift .w { opacity: 1; transform: none; filter: none; }
+}
